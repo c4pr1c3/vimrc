@@ -40,7 +40,7 @@ deb_deps=(
 "${other_deps[@]}"
 )
 
-PY_VERSION="3.7.2"
+PY_VERSION="3.6.6"
 
 # 可选依赖
 

@@ -2,14 +2,13 @@ sudo: required
 
 language: sh
 
-addons:
-  apt:
-    sources:
-      - ppa:jonathonf/vim
-    packages:
-      - vim
+before_install:
+    - sudo add-apt-repository ppa:jonathonf/vim -y
+    - sudo apt-get update -q
+    - sudo apt-get install vim -y
 
 script:
+  - vim --version
   - ./setup.sh
   - source ~/.bashrc
   - vim +'PlugInstall --sync' +qall
