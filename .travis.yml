@@ -1,0 +1,34 @@
+sudo: required
+
+language: sh
+
+os:
+  - linux
+
+dist: 
+  - xenial
+  - trusty
+
+addons:
+  apt:
+    sources:
+      - ppa:jonathonf/vim
+    packages:
+      - vim
+
+script:
+  - ./setup.sh
+  - source ~/.bashrc
+  - vim +'PlugInstall --sync' +qall
+
+after_script:
+  - vim --version
+
+after_failure:
+  - id
+  - pwd
+  - df -h
+
+notifications:
+  email:
+    on_success: never
