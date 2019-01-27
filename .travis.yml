@@ -2,13 +2,6 @@ sudo: required
 
 language: sh
 
-os:
-  - linux
-
-dist: 
-  - xenial
-  - trusty
-
 addons:
   apt:
     sources:
