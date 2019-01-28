@@ -6,8 +6,10 @@ before_install:
     - sudo add-apt-repository ppa:jonathonf/vim -y
     - sudo apt-get update -q
     - sudo apt-get install vim -y
+    - mv $TRAVIS_BUILD_DIR $HOME/.vim
 
 script:
+  - cd $HOME/.vim
   - vim --version
   - ./setup.sh
   - source ~/.bashrc

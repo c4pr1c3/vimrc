@@ -103,7 +103,7 @@ for pkg in "${pip_deps[@]}";do
   [[ $(pip show "$pkg") ]] || pip install "$pkg"
 done
 
-[[ -d "$VIM_UNDO_DIR" ]] || mkdir "$VIM_UNDO_DIR"
+[[ -d "$VIM_UNDO_DIR" ]] || mkdir -p "$VIM_UNDO_DIR"
 
 if [[ -f "$STARDICT_FILE" ]];then
   if [[ -d "${STARDICT_DIR_DONE}" ]];then
