@@ -1,6 +1,6 @@
 # vimrc
 
-![Build Status](https://www.travis-ci.org/c4pr1c3/vimrc.svg?branch=ubuntu)
+[![Build Status](https://www.travis-ci.org/c4pr1c3/vimrc.svg?branch=ubuntu)](https://travis-ci.org/c4pr1c3/vimrc)
 
 My **PERSONAL** vimrc bootstrap script.
 
