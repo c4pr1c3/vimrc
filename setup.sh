@@ -2,14 +2,21 @@
 
 set -e
 
-if [[ "$(lsb_release -i -s 2>/dev/null)" != "Ubuntu" ]];then
-   echo "This script SHOULD ONLY be run on Ubuntu"
-   exit 1
+if [[ ! "$(lsb_release -i -s 2>/dev/null)" =~ Ubuntu|Kali ]];then
+   read -r -p "This script SHOULD ONLY be run on Ubuntu or Kali, run at your own RISK: (y/n)" agree
+   if [[ ! "$agree" =~ y|Y ]];then
+     exit 1
+   fi
+   agree=''
+else
+  export DEBIAN_FRONTEND=noninteractive
 fi
 
 if [[ $EUID -eq 0 ]]; then
-   echo "This script SHOULD NOT be run as root"
-   exit 1
+   read -r -p "This script SHOULD NOT be run as root, run at your own RISK: (y/n)" agree
+   if [[ ! "$agree" =~ y|Y ]];then
+     exit 1
+   fi
 fi
 
 VIM_UNDO_DIR="${HOME}/.vim/_undodir"
@@ -34,13 +41,14 @@ other_deps=(
 )
 
 deb_deps=(
+"vim-nox"
 "${sh_deps[@]}"
 "${pyenv_deps[@]}"
 "${ycm_deps[@]}"
 "${other_deps[@]}"
 )
 
-PY_VERSION="3.6.6"
+PY_VERSION="3.6.8"
 
 # 可选依赖
 
@@ -60,6 +68,7 @@ PYENV_REPO="https://github.com/pyenv/pyenv.git"
 export PYENV_ROOT="${HOME}/.pyenv"
 
 pip_deps=(
+"jedi"
 "flake8"
 )
 

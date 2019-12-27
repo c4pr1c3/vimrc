@@ -51,6 +51,9 @@ filetype off                   " Vundle config required!
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  if v:shell_error
+      exit
+  endif
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -112,6 +115,7 @@ Plug 'powerline/powerline'
 Plug 'bling/vim-airline'
 Plug 'rizzatti/dash.vim'
 Plug 'vim-scripts/indentpython.vim'
+Plug 'nvie/vim-flake8'
 Plug 'davidhalter/jedi-vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'iamcco/mathjax-support-for-mkdp'
@@ -141,13 +145,22 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'plasticboy/vim-markdown'
 
 " https://github.com/vimwiki/vimwiki
-"Plug 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki'
 
 " https://github.com/rhysd/vim-grammarous
 Plug 'rhysd/vim-grammarous'
 
 " https://github.com/junegunn/fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+"Plug 'tweekmonster/django-plus'
+
+" Align GitHub-Flavored Markdown Tables in Vim
+Plug 'junegunn/vim-easy-align'
+
+" Always load the vim-devicons as the very last one.
+"Plug 'ryanoasis/vim-devicons'
+
 " Initialize plugin system
 call plug#end()
 
@@ -200,6 +213,8 @@ set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusl
 let g:Powerline_symbols = 'fancy'
 
 "vimwiki
+" https://superuser.com/questions/495889/have-vimwiki-set-filetype-only-within-wikihome
+let g:vimwiki_global_ext = 0
 let g:tagbar_type_vimwiki = {
             \ 'ctagstype' : 'vimwiki',
             \ 'kinds'     : [
@@ -209,6 +224,14 @@ let g:tagbar_type_vimwiki = {
             \ }
 let g:vimwiki_use_mouse=1
 let g:vimwiki_list = [
+            \ {'path': $PKW_HOME."/md_vimwiki",
+			\ 'path_html': $PKW_HOME."/md_vimwiki_html/",
+			\ 'template_path': $PKW_HOME."/template/",
+			\ 'template_default': 'default_template',
+			\ 'template_ext': '.tpl',
+			\ 'diary_rel_path': '/',
+			\ 'diary_index': 'diary',
+            \ 'syntax': 'markdown', 'ext': '.mkd'},
             \ {'path': $PKW_HOME."/vimwiki",
 			\ 'path_html': $PKW_HOME."/vimwiki_html/",
 			\ 'template_path': $PKW_HOME."/template/",
@@ -240,6 +263,23 @@ let g:vimwiki_list = [
 let g:vimwiki_file_exts = 'c, cpp, wav, txt, h, hpp, zip, sh, awk, ps, pdf, flv, 7z, htm, swf, doc, docx, ppt, pptx'
 let g:vimwiki_valid_html_tags='b,i,s,u,sub,sup,kdb,del,br,hr,div,code,h1,script,a,p,blockquote,font'
 let g:vimwiki_camel_case = 0
+let g:vimwiki_listsyms = '✗○◐●✓'
+
+:let g:asyncrun_open = 8
+
+" https://mkaz.github.io/working-with-vim/vimwiki.html
+" 添加自定义命令 :Diary
+command! Diary VimwikiDiaryIndex
+augroup vimwikigroup
+    autocmd!
+    " automatically update links on read diary
+    autocmd BufRead,BufNewFile diary.wiki VimwikiDiaryGenerateLinks
+augroup end
+
+" mattn/calendar-vim settings
+let g:calendar_diary=$PKW_HOME."/md_vimwiki"
+let g:calendar_filetype = 'markdown'
+
 
 "ctags for vimwiki
 let tlist_vimwiki_settings = 'vimwiki;h:Headers'
@@ -479,6 +519,7 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
+noremap <F9> :AsyncRun bash "%"<cr>
 endfun
 
 """"""""""""""""""""""""""""""""""""""""""""""""""*
@@ -812,6 +853,10 @@ autocmd FileType c,cpp call C()
      let g:syntastic_auto_loc_list = 1
      let python_highlight_all=1
 
+     " AsyncRun -raw python need this setting
+     let $PYTHONUNBUFFERED=1
+     noremap <F9> :AsyncRun -raw=1 python "%"<cr>
+
 	 "<C-K> == see pydoc for current word under cursor
 	 nmap <C-K> :call PyDoc(expand("<cword>"))<CR>
      " control-c comments block
@@ -831,6 +876,13 @@ autocmd FileType c,cpp call C()
     fun! MARKDOWN()
         " Enable TOC window auto-fit
         let g:vim_markdown_toc_autofit = 1
+        
+        " Plug 'junegunn/vim-easy-align'
+        " Start interactive EasyAlign in visual mode (e.g. vipga)
+        xmap ga <Plug>(EasyAlign)
+        
+        " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+        nmap ga <Plug>(EasyAlign)
     endfun " endfun MARKDOWN()
 
 "##################################################################
