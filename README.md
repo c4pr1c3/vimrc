@@ -12,6 +12,10 @@ cd ~/.vim && bash setup.sh
 
 # open vim after the finish of the above scripts
 source ~/.bashrc && vim
+
+# vim 8.2+ only!!!
+# in vim Normal mode
+# Press <space><space> to trigger vim-quickui
 ```
 
 ## DISCLAIMER

@@ -52,9 +52,24 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   if v:shell_error
+    " just in case of github access failure
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+      \ https://gitee.com/c4pr1c3/vim-plug/raw/master/plug.vim
+    if v:shell_error
       exit
+    else
+      silent !touch ~/.vim/autoload/plug.vim.ready
+    endif
+  else
+    silent !touch ~/.vim/autoload/plug.vim.ready
   endif
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+if !empty(glob('~/.vim/autoload/plug.vim.ready'))
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    if !v:shell_error
+      silent !rm -f "$HOME/.vim/autoload/plug.vim.ready"
+    endif
 endif
 
 " Specify a directory for plugins
@@ -148,7 +163,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'vimwiki/vimwiki'
 
 " https://github.com/rhysd/vim-grammarous
-Plug 'rhysd/vim-grammarous'
+" Plug 'rhysd/vim-grammarous'
 
 " https://github.com/junegunn/fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -160,6 +175,12 @@ Plug 'junegunn/vim-easy-align'
 
 " Always load the vim-devicons as the very last one.
 "Plug 'ryanoasis/vim-devicons'
+
+" Vim 8.2+ only!!!
+Plug 'skywind3000/vim-quickui'
+
+" vim 8.1.1615+ only!!!
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 
 " Initialize plugin system
 call plug#end()
@@ -297,6 +318,8 @@ set undolevels=1000 "maximum number of changes that can be undone
 " https://github.com/sjl/gundo.vim
 " GundoShow && GundoHide
 let g:gundo_preview_bottom=1
+" ref: https://github.com/sjl/gundo.vim/pull/35
+let g:gundo_prefer_python3 = 1
 
 set encoding=utf8
 let &termencoding=&encoding
@@ -1012,5 +1035,133 @@ function ToggleHex()
   let &modifiable=l:oldmodifiable
 endfunction
 
+" ref: https://vi.stackexchange.com/questions/10939/how-to-see-if-a-plugin-is-active
+if has_key(g:plugs, 'LeaderF')
+    " LeaderF configurations begin
+    " don't show the help in normal mode
+    let g:Lf_HideHelp = 1
+    let g:Lf_UseCache = 0
+    let g:Lf_UseVersionControlTool = 0
+    let g:Lf_IgnoreCurrentBufferName = 1
+    " popup mode
+    let g:Lf_WindowPosition = 'popup'
+    let g:Lf_PreviewInPopup = 1
+    let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
+    let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
 
+    let g:Lf_ShortcutF = "<leader>ff"
+    noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+    noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+    noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+
+    " search visually selected text literally
+    xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+    noremap go :<C-U>Leaderf! rg --recall<CR>
+
+    " should use `Leaderf gtags --update` first
+    " install gtags on mac with Homebrew: brew install global && pip install pygments
+    " ref: https://zhuanlan.zhihu.com/p/36279445
+    " ref: https://zhuanlan.zhihu.com/p/64842373
+    " tag database is located in $HOME/.LfCache
+    let g:Lf_GtagsAutoGenerate = 1
+    let g:Lf_RootMarkers = ['.git', '.hg', '.svn']
+    
+    " 对于原生支持的6种语言使用内置parser，其他语言使用pygments作为parser
+    let g:Lf_Gtagslabel = 'native-pygments' 
+
+    noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+    noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+    noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+    noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+    noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+    " LeaderF configurations end
+endif
+
+if has_key(g:plugs, 'vim-quickui')
+    " vimquickui
+    " clear all the menus
+    call quickui#menu#reset()
+
+    " Plugin
+    call quickui#menu#install('&Plugin', [
+                \ [ "&Open Calendar", 'Calendar' ],
+                \ [ "&Generate Index", 'Diary', 'Generate Index of Vimwiki Diary' ],
+                \ [ "&NERDTree", 'NERDTree' ],
+                \ [ "start Draw&It", 'DIstart', 'move and draw using direction key, press <space> to toggle into and out of erase mode' ],
+                \ [ "&stop DrawIt", 'DIstop' ],
+                \ ])
+    
+    " GUndo
+    call quickui#menu#install('&Gundo', [
+                \ [ "&Show", 'GundoShow' ],
+                \ [ "&Hide", 'GundoHide' ],
+                \ ])
+
+    " Tool
+    call quickui#menu#install('&Tool', [
+                \ [ "Lookup in &Dictionary", 'call Mydict()', 'Press F to close the result window' ],
+                \ [ "Highlight the &Column under cursor ", 'call SetColorColumn()', 'Press ,ch to set/unset this feature' ],
+                \ ])
+
+    " items containing tips, tips will display in the cmdline
+    call quickui#menu#install('&LeaderF', [
+                \ [ 'Find in &File', 'Leaderf file', 'Press \ff in Normal mode' ],
+                \ [ 'Find in &MRU', 'Leaderf mru', 'Press \fm in Normal mode' ],
+                \ [ 'Find in &Line', 'Leaderf line', 'Press \fl in Normal mode' ],
+                \ [ 'Jump to Definition', '', 'Press \fd in Normal mode' ],
+                \ [ 'Find all References', '', 'Press \fr in Normal mode' ],
+                \ [ 'Recall Last Search', '', 'Press \fo in Normal mode' ],
+                \ [ 'Jump to Next result', '', 'Press \fn in Normal mode' ],
+                \ [ 'Jump to Previous result', '', 'Press \fp in Normal mode' ],
+                \ ])
+    " Markdown
+    call quickui#menu#install('&Markdown', [
+                \ [ "&Preview Markdown", 'MarkdownPreview', "Preview Markdown in a Browser"],
+                \ [ "Format Table", '', 'visual select the table code and press ga to Auto Format'],
+                \ [ "&Make GFM ToC", 'GenTocGFM', 'Generate GFM style ToC under cursor'],
+                \ [ "&ToC", 'Toc', 'Generate ToC in left-split window of vim'],
+                \ ])
+
+    " VCSCommand
+    call quickui#menu#install("&VCS", [
+                \ ['&Add', 'VCSAdd', 'aka. git add'],
+                \ ['&Diff', 'VCSVimDiff', 'aka. git diff'],
+                \ ['&Log', 'VCSLog', 'aka. git log'],
+                \ ])
+
+
+    " script inside %{...} will be evaluated and expanded in the string
+    call quickui#menu#install("&Option", [
+                \ ['Set &Spell %{&spell? "Off":"On"}', 'set spell!'],
+                \ ['Set &Cursor Line %{&cursorline? "Off":"On"}', 'set cursorline!'],
+                \ ['Set &Paste %{&paste? "Off":"On"}', 'set paste!'],
+                \ ['Toggle &Hex Mode', 'Hexmode' ],
+                \ ['Set &Wrap mode %{&wrap? "Off":"On"}', 'set wrap!', 'wrap a long line into lines'],
+                \ ])
+
+    " Run with AsyncRun
+    call quickui#menu#install("&Run", [
+                \ ['Run &Python Script', 'AsyncRun -raw=1 python "%"'],
+                \ ['Run &Bash Script', 'AsyncRun bash "%"'],
+                \ ['Run Bash Script in &Debug mode', 'AsyncRun bash "%"'],
+                \ ['&Update gtags database for Leaderf', 'Leaderf gtags --update'],
+                \ ])
+
+    " register HELP menu with weight 1000
+    call quickui#menu#install('H&elp', [
+                \ ["&Cheatsheet", 'help index', ''],
+                \ ['T&ips', 'help tips', ''],
+                \ ['--',''],
+                \ ["&Tutorial", 'help tutor', ''],
+                \ ['&Quick Reference', 'help quickref', ''],
+                \ ['&Summary', 'help summary', ''],
+                \ ], 10000)
+
+    " enable to display tips in the cmdline
+    let g:quickui_show_tip = 1
+
+    " hit space twice to open menu
+    noremap <space><space> :call quickui#menu#open()<cr>
+
+endif
 

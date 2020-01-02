@@ -38,6 +38,7 @@ ycm_deps=(
 other_deps=(
 "ctags"
 "unzip"
+"global" # gtags
 )
 
 deb_deps=(
@@ -70,6 +71,7 @@ export PYENV_ROOT="${HOME}/.pyenv"
 pip_deps=(
 "jedi"
 "flake8"
+"pygments"
 )
 
 # 必要依赖安装
