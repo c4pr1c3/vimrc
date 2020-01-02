@@ -13,7 +13,8 @@ script:
   - vim --version
   - ./setup.sh
   - source ~/.bashrc
-  - vim +'PlugInstall --sync' +qall
+  - vim -E -s -u $HOME/.vimrc +'PlugInstall --sync' +qall || true # fix vim E117: Unknown function: quickui#menu#reset
+  - vim -E -s -u $HOME/.vimrc +'PlugInstall --sync' +qall # try PlugInstall again to verify if ok
 
 after_script:
   - vim --version
