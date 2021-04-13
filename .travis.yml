@@ -1,15 +1,13 @@
 language: shell
 
 os: linux
-dist:
-  - xenial
-  - bionic
-  - focal
 
-jobs:
+matrix:
+  include:
+    - dist: xenial
+    - dist: bionic
+    - dist: focal
   allow_failures:
-    - os: linux
-      dist: xenial
     - os: linux
       dist: bionic
     - os: linux
