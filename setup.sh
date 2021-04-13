@@ -37,6 +37,7 @@ ycm_deps=(
 
 other_deps=(
 "ctags"
+"cscope"
 "unzip"
 "global" # gtags
 )

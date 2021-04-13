@@ -8,6 +8,7 @@ if has_key(g:plugs, 'vim-quickui')
                 \ [ "&Open Calendar", 'Calendar' ],
                 \ [ "&Generate Index", 'Diary', 'Generate Index of Vimwiki Diary' ],
                 \ [ "&NERDTree", 'NERDTree' ],
+                \ [ "NERDTree&Find", 'NERDTreeFind' ],
                 \ [ "start Draw&It", 'DIstart', 'move and draw using direction key, press <space> to toggle into and out of erase mode' ],
                 \ [ "&stop DrawIt", 'DIstop' ],
                 \ ])

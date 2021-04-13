@@ -73,7 +73,7 @@ Plug 'chrisbra/unicode.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'mattn/emmet-vim'
 Plug 'myhere/vim-nodejs-complete'
-Plug 'rodjek/vim-puppet'
+" Plug 'rodjek/vim-puppet'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-dispatch'
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
@@ -134,6 +134,9 @@ Plug 'skywind3000/vim-quickui'
 
 " vim 8.1.1615+ only!!!
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/gutentags_plus'
 
 " Initialize plugin system
 call plug#end()
