@@ -1,6 +1,10 @@
-sudo: required
+language: shell
 
-language: sh
+os: linux
+dist:
+  - xenial
+  - bionic
+  - focal
 
 jobs:
   allow_failures:
