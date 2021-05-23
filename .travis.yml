@@ -11,7 +11,7 @@ matrix:
     - os: linux
       dist: bionic
     - os: linux
-      dist: focal
+      dist: xenial
 
 before_install:
     - sudo add-apt-repository ppa:jonathonf/vim -y
