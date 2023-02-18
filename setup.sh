@@ -28,7 +28,7 @@ sh_deps=(
 pyenv_deps=(
 "make build-essential libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev libffi-dev liblzma-dev python-openssl"
+xz-utils tk-dev libffi-dev liblzma-dev"
 )
 
 ycm_deps=(
@@ -36,7 +36,7 @@ ycm_deps=(
 )
 
 other_deps=(
-"ctags"
+"universal-ctags"
 "cscope"
 "unzip"
 "global" # gtags
@@ -50,7 +50,7 @@ deb_deps=(
 "${other_deps[@]}"
 )
 
-PY_VERSION="3.6.8"
+PY_VERSION="3"
 
 # 可选依赖
 
